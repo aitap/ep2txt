@@ -1,0 +1,10 @@
+This program converts episodic StellarNet spectra to text files.
+
+Usage:
+	ep2txt <infile.ep1> <outfile.txt>
+		- OR -
+	ep2txt <infile.ep1> <outfile.txt> <c1> <c2> <c3> <c4>
+
+where c1..c4 are manually set wavelength polynome coefficients,
+
+	wavelength, nm = c3 + c1*i + c2*i*i + c4*i*i*i
