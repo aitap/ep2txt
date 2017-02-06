@@ -14,7 +14,7 @@ int main(int argc, char** argv) {
 			char *endptr = NULL;
 			errno = 0;
 			c[i] = strtof(argv[3+i], &endptr);
-			if ((c[i] == 0.) && (endptr == argv[3+i])) {
+			if ((c[i] == 0.) && (endptr == argv[3+i]) || errno) {
 				printf("%s isn't a floating point number\n", argv[3+i]);
 				return 1;
 			}
