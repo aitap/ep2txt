@@ -14,11 +14,11 @@ int main(int argc, char** argv) {
 			char *endptr = NULL;
 			errno = 0;
 			c[i] = strtof(argv[3+i], &endptr);
-			if ((c[i] == 0.) && (endptr == argv[3+i])) {
+			if ((c[i] == 0.) && (endptr == argv[3+i]) || errno) {
 				printf("%s isn't a floating point number\n", argv[3+i]);
 				return 1;
 			}
-		}
+		} /* FIXME: there was something about dividing c1 and c2 by 2 and 4 ? */
 	else if (argc != 3) {
 		printf("Usage: %s infile.ep1 outfile.txt [c1 c2 c3 c4]\n", argv[0]);
 		return 1;
@@ -75,6 +75,7 @@ int main(int argc, char** argv) {
 		}
 	}
 
+	free(spectra);
 	if (fclose(outfile)) {
 		printf("%s: couldn't close, %s", argv[2], strerror(errno));
 		return 5;
