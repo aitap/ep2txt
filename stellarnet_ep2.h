@@ -1,3 +1,4 @@
+#include <stddef.h>
 char ep2_parse(
 	/* in */ const char * /* filename */,
 	/* in, opt */ float * /* wavelen_coefs */,
