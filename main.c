@@ -4,7 +4,7 @@
 #include "stellarnet_ep2.h"
 
 int main (int argc, char** argv) {
-	float coefs[4] = {};
+	float coefs[4];
 	if (argc == 7) // use provided coeffs
 		for (size_t i = 0; i < 4; i++) {
 			char *endptr = NULL;
