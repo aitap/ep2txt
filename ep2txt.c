@@ -3,10 +3,38 @@
 #include <stdlib.h> /* strtof, calloc */
 #include <errno.h> /* error checking */
 #include <string.h> /* strerror */
+#include <stdint.h> /* fixed-size integers */
 
-/* assumption: same IEEE 32-bit float as used in the files */
+// NOTE: this code assumes that your architecture has IEEE 32-bit floats and CHAR_BIT is 8
 
 const size_t num_points = 2051;
+
+typedef union {
+	uint8_t u8[2];
+	uint16_t u16;
+} endianness_test;
+
+// byte swapping will occur for each `size`-sized item
+static size_t fread_le(void * ptr, size_t size, size_t nmemb, FILE* stream) {
+	{
+		size_t ret = 0;
+		if ((ret = fread(ptr, size, nmemb, stream)) != nmemb) return ret;
+	}
+
+	if (((endianness_test){.u16 = 0x0100}).u8[0]) { // host is big-endian => must byteswap
+		char item[size]; // yes, this is C99 VLA
+
+		for (size_t i = 0; i < nmemb; i++) {
+			memcpy(item, (char*)ptr + i*size, size);
+			for (size_t j = 0; j < size; j++)
+				*((char*)ptr + i*size + j) = item[size-j];
+		}
+
+		free(item);
+	}
+
+	return nmemb;
+}
 
 enum ep2_parse_result ep2_parse(
 	const char * filename, float wavelen_coefs[4], size_t * num_spectra,
@@ -21,7 +49,7 @@ enum ep2_parse_result ep2_parse(
 	if (!infile) { ret = ep2_open_error; goto cleanup; }
 
 	float header[10]; // header is 9 bytes, but we use the 10th below
-	if (fread(header, sizeof(header), 1, infile) != 1) {
+	if (fread_le(header, sizeof(header), 1, infile) != 1) {
 		ret = ep2_read_error;
 		goto cleanup;
 	}
@@ -54,7 +82,7 @@ enum ep2_parse_result ep2_parse(
 
 	rewind(infile);
 	for (size_t i = 0; i < *num_spectra; i++)
-		if (fread((*intensities)[i], sizeof(float), num_points, infile) != num_points) {
+		if (fread_le((*intensities)[i], sizeof(float), num_points, infile) != num_points) {
 			ret = ep2_read_error;
 			goto cleanup;
 		}
