@@ -25,7 +25,7 @@ static size_t fread_le(void * ptr, size_t size, size_t nmemb, FILE* stream) {
 		for (size_t i = 0; i < nmemb; i++) {
 			memcpy(item, (char*)ptr + i*size, size);
 			for (size_t j = 0; j < size; j++)
-				*((char*)ptr + i*size + j) = item[size-j];
+				*((char*)ptr + i*size + j) = item[size-j-1];
 		}
 
 		free(item);
