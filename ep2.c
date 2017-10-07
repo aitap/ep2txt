@@ -7,8 +7,6 @@
 
 // NOTE: this code assumes that your architecture has IEEE 32-bit floats and CHAR_BIT is 8
 
-const size_t num_points = 2051;
-
 typedef union {
 	uint8_t u8[2];
 	uint16_t u16;
@@ -68,13 +66,13 @@ enum ep2_parse_result ep2_parse(
 		goto cleanup;
 	}
 	for (size_t i = 0; i < *num_spectra; i++) {
-		(*intensities)[i] = calloc(num_points, sizeof(float));
+		(*intensities)[i] = calloc(ep2_num_points, sizeof(float));
 		if (!(*intensities)[i]) {
 			ret = ep2_alloc_error;
 			goto cleanup;
 		}
 	}
-	*wavelengths = calloc(num_points, sizeof(float));
+	*wavelengths = calloc(ep2_num_points, sizeof(float));
 	if (!*wavelengths) {
 		ret = ep2_alloc_error;
 		goto cleanup;
@@ -82,11 +80,11 @@ enum ep2_parse_result ep2_parse(
 
 	rewind(infile);
 	for (size_t i = 0; i < *num_spectra; i++)
-		if (fread_le((*intensities)[i], sizeof(float), num_points, infile) != num_points) {
+		if (fread_le((*intensities)[i], sizeof(float), ep2_num_points, infile) != ep2_num_points) {
 			ret = ep2_read_error;
 			goto cleanup;
 		}
-	for (size_t wl = 0; wl < num_points; wl++)
+	for (size_t wl = 0; wl < ep2_num_points; wl++)
 		(*wavelengths)[wl] = wl_c[2] + wl*(wl_c[0] + wl*(wl_c[1] + wl_c[3]*wl));
 
 cleanup:

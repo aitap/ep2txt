@@ -1,4 +1,5 @@
 #include <stddef.h>
+enum {ep2_num_points = 2051};
 enum ep2_parse_result {
 	ep2_success = 0,
 	ep2_open_error,

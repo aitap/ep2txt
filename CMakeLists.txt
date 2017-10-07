@@ -1,4 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 project(EP2TXT)
 set(CMAKE_C_STANDARD 99)
-add_library(ep2txt ep2txt.c)
+add_library(ep2 ep2.c)
+add_executable(ep2txt main.c)
+target_link_libraries(ep2txt ep2)
