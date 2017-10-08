@@ -9,4 +9,14 @@ where c1..c4 are manually set wavelength polynome coefficients,
 
 	wavelength, nm = c3 + c1*i + c2*i*i + c4*i*i*i
 
-TODO: don't leak resources on errors, allowing the code to be reused in libraries
+Library usage:
+Pass float[4] of wavelength coefficients (or NULL if you want to use the file)
+and pointers to size_t number_of_spectra, float * wavelengths, ** intensities.
+Intensities[i] will contain 2051 points of each captured frame (i).
+After you're finished, don't forget to free the data:
+free(wavelengths);
+for (i = 0; i < num_spectra; i++) free(intensities[i]);
+free(intensities);
+
+On errors all memory the library may have allocated is freed but the contents
+of the variables you passed to it are not defined.
