@@ -47,7 +47,7 @@ enum ep2_parse_result ep2_parse(
 	if (!infile) { ret = ep2_open_error; goto cleanup; }
 
 	float header[10]; // header is 9 bytes, but we use the 10th below
-	if (fread_le(header, sizeof(float), 9, infile) != 1) {
+	if (fread_le(header, sizeof(float), 9, infile) != 9) {
 		ret = ep2_read_error;
 		goto cleanup;
 	}
@@ -57,7 +57,7 @@ enum ep2_parse_result ep2_parse(
 	float * wl_c = wavelen_coefs; // use specified
 	if (!wl_c) { // pointer was NULL
 		wl_c = header + 6; // read from the file
-		wl_c[4] = 0; // c4 isn't present in the file but we'd reserved space for it
+		wl_c[3] = 0; // c4 isn't present in the file but we'd reserved space for it
 	}
 
 	*intensities = calloc(*num_spectra, sizeof(float*));
